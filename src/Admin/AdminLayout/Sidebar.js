@@ -103,7 +103,7 @@ export default function Sidebar() {
                         </Link>
 
 
-                        <Link className="d-flex mt-4  anchor3" to="/events" onClick={() => setIsOpen(false)}>
+                        <Link className="d-flex mt-4  anchor3" to="/product" onClick={() => setIsOpen(false)}>
                             <div className="sidebar-position" onMouseEnter={ChartSimpleEnter}
                                 onMouseLeave={ChartSimpleLeave}>
                                 {isChartSimple ? <FontAwesomeIcon icon={faCalendarDays} shake /> : <FontAwesomeIcon icon={faCalendarDays} />}
