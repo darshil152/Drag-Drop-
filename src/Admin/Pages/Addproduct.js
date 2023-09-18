@@ -6,6 +6,9 @@ import { useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import firebaseApp from '../../Firebase/firebase';
 import Loader from '../../Loader';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+
 
 let x = []
 let imageUrl = []
@@ -14,12 +17,46 @@ export default function Addproduct() {
 
 
     const [datas, setData] = useState([]);
+    const [showLoader, setshowLoader] = useState(false);
     const [preview, setPreview] = useState(datas)
     const [img, setImg] = useState([]);
-    const [showLoader, setshowLoader] = useState(false);
+    const [description, setDescriptoon] = useState('')
+    const [showRadio, setShowRadio] = useState(false)
+    const [inputs, setinput] = useState(false)
+    const [subpush, setsubpush] = useState('')
+    const [deoendence, setdependence] = useState([])
+    const [childdependence, setChilddependence] = useState([])
 
+    const [childpush, setChildpish] = useState('')
+
+
+    const [mainCat, setMainCat] = useState([])
+    const [subCat, setsubCat] = useState([])
+    const [ChildCat, setChildCat] = useState([])
+
+    const [Radiovalue, setRadiovalue] = useState("")
 
     const formikref = useRef('')
+
+
+    useEffect(() => {
+        getdata()
+    }, []);
+
+    const getdata = () => {
+        let x = []
+        const db = firebaseApp.firestore();
+        db.collection('Setting').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                setChildCat(doc.data().ChildCategory)
+                setsubCat(doc.data().SubCategory)
+                setMainCat(doc.data().MainCategory)
+            })
+
+        }).catch(err => {
+            console.error(err)
+        });
+    }
 
 
     const clearvalue = () => {
@@ -51,9 +88,7 @@ export default function Addproduct() {
 
 
 
-    useEffect(() => {
-        // setItems(data);
-    }, []);
+
 
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
@@ -100,18 +135,7 @@ export default function Addproduct() {
         }
     }
 
-    // const getBase64 = (file) => {
-    //     var reader = new FileReader();
-    //     reader.readAsDataURL(file);
-    //     reader.onload = () => {
-    //         x.push(reader.result)
-    //         setData(x)
 
-    //     };
-
-    //     setPreview(datas)
-
-    // }
 
 
 
@@ -180,12 +204,12 @@ export default function Addproduct() {
             Skucode: values.skucode,
             category: values.category,
             Image: img,
+            description: description,
             price: values.price,
             id: makeid(8),
             status: Number(0)
         }
-        console.log(obj)
-
+        setImg([])
         let registerQuery = new Promise((resolve, reject) => {
             let db = firebaseApp.firestore();
             db.collection("Products").add(obj)
@@ -207,8 +231,59 @@ export default function Addproduct() {
     }
 
 
+    const showinput = () => {
+        setinput(true)
+        console.log(inputs)
+        document.getElementById('showfield').style.display = "none"
+    }
 
 
+
+    const saveradio = (e) => {
+        setRadiovalue(e.target.value)
+    }
+
+    const selectMain = (e) => {
+        setsubpush(e.target.value)
+        findcate(e.target.value)
+    }
+
+    const findcate = (val) => {
+        let x = []
+        let flag = false
+
+        for (let i = 0; i < subCat.length; i++) {
+            if (subCat[i].Maincatid == val) {
+                x.push(subCat[i])
+                flag = true
+            }
+        }
+        if (flag) {
+            setdependence(x)
+        } else {
+            setdependence([])
+        }
+
+    }
+
+    const selectSub = (e) => {
+        console.log(e.target.value)
+        setChildpish(e.target.value)
+        let x = []
+        let flag = false
+        for (let i = 0; i < ChildCat.length; i++) {
+            console.log(ChildCat)
+            if (ChildCat[i].SubCategory == e.target.value) {
+                x.push(ChildCat[i])
+                flag = true
+            }
+
+        } if (flag) {
+            setChilddependence(x)
+        } else {
+            setChilddependence([])
+        }
+    }
 
 
 
@@ -216,6 +291,7 @@ export default function Addproduct() {
 
     return (
         <>
+
             <Layout />
             {showLoader && <Loader />}
 
@@ -225,7 +301,7 @@ export default function Addproduct() {
 
 
                 <Formik
-                    initialValues={{ productname: "", skucode: "", category: "", price: "" }}
+                    initialValues={{ productname: "", skucode: "", price: "", }}
                     innerRef={formikref}
                     onSubmit={(values, { setSubmitting }) => {
                         submitdata(values)
@@ -236,10 +312,9 @@ export default function Addproduct() {
                             .required("productname Required"),
                         skucode: Yup.string()
                             .required("skucode Required"),
-                        category: Yup.string()
-                            .required("category Required"),
                         price: Yup.string()
-                            .required("price Required")
+                            .required("price Required"),
+
 
                     })}
 
@@ -293,35 +368,7 @@ export default function Addproduct() {
                                                 )}
                                             </div>
 
-                                            <div className="col-lg-6 mt-5">
-                                                <label htmlFor="Category">Category:</label>
 
-                                                <select
-                                                    name="category"
-                                                    value={values.category}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                    className={errors.category && touched.category && "error"}
-                                                >
-                                                    <option value="" label="Select a color">
-                                                        Select a color{" "}
-                                                    </option>
-                                                    <option value="Tshirt" label="T-shirt">
-                                                        {" "}
-                                                        T-shirt
-                                                    </option>
-                                                    <option value="Shirt" label="Shirt">
-                                                        Shirt
-                                                    </option>
-                                                    <option value="shoes" label="shoes">
-                                                        shoes
-                                                    </option>
-                                                </select>
-                                                {errors.category && touched.category && (
-                                                    <div className="input feedback">{errors.category}</div>
-                                                )}
-
-                                            </div>
 
                                             <div className="col-lg-6 mt-5">
                                                 <label htmlFor="price">price:</label>
@@ -340,7 +387,7 @@ export default function Addproduct() {
                                                 )}
                                             </div>
 
-                                            <div className="col-lg-12" style={{ marginTop: "30px" }}>
+                                            <div className="col-lg-6" style={{ marginTop: "30px" }}>
                                                 <div className="main_content">
                                                     <div className="container">
 
@@ -386,6 +433,99 @@ export default function Addproduct() {
                                                 </div>
                                             </div>
 
+                                            <div className="col-lg-12 mt-5">
+                                                <label htmlFor="description">description:</label>
+                                                <ReactQuill theme="snow" value={description} onChange={setDescriptoon} />
+                                            </div>
+
+                                            <div className="col-lg-12 mt-5">
+                                                <label htmlFor="description">Add Size:</label><br />
+                                                <button onClick={showinput} className='btn btn-primary' id='showfield'>+</button>
+                                                {
+                                                    inputs == true ?
+                                                        <div className='check' >
+                                                            Shoes Size :<input type="radio" value="shoes" name='shoes' onChange={saveradio} /><br />
+                                                            Cloth Size :<input type="radio" value="Cloth" name='shoes' onChange={saveradio} />
+                                                        </div>
+                                                        : null
+                                                }
+
+                                                {
+
+                                                    Radiovalue == "shoes" ?
+                                                        <select name="cloth" id="cloth" >
+                                                            <option value="7">7</option>
+                                                            <option value="8">8</option>
+                                                            <option value="9">9</option>
+                                                            <option value="9.5">9.5</option>
+                                                            <option value="10">10</option>
+                                                        </select> :
+
+                                                        Radiovalue == "Cloth" ?
+                                                            <select name="cars" id="cars">
+                                                                <option value="S">S</option>
+                                                                <option value="M">M</option>
+                                                                <option value="L">L</option>
+                                                                <option value="XL">XL</option>
+                                                                <option value="XXl">XXl</option>
+                                                                <option value="XXXl">XXXl</option>
+                                                            </select>
+                                                            : null
+                                                }
+                                            </div>
+
+
+
+                                            <div className="col-lg-4 ">
+                                                <label className="lbl-comn-info">Choose Main Category : <span className="text-danger"></span></label>
+                                                <select className="selecttype"
+                                                    name="Maincategory"
+                                                    onChange={selectMain}
+                                                >
+                                                    <option>Select the Category :</option>
+
+                                                    {mainCat && mainCat.length > 0 && mainCat.map((i) => (
+                                                        <option value={i.id}>{i.CateName}</option>
+                                                    ))}
+
+                                                </select>
+                                            </div>
+
+                                            <div className="col-lg-4 mb-3">
+                                                <label className="lbl-comn-info">Choose Sub-Category : <span className="text-danger"></span></label>
+                                                <select className="selecttype"
+                                                    name="Maincategory"
+                                                    onChange={selectSub}
+                                                >
+                                                    <option selected>Select the Category :</option>
+
+                                                    {deoendence && deoendence.length > 0 && deoendence.map((i) => (
+                                                        <option value={i.id}>{i.CateName}</option>
+                                                    ))}
+
+                                                </select>
+                                            </div>
+
+                                            <div className="col-lg-4 mb-3">
+                                                <label className="lbl-comn-info">Choose Child Category : <span className="text-danger"></span></label>
+                                                <select className="selecttype"
+                                                    name="Maincategory"
+                                                >
+                                                    <option>Select the Category :</option>
+
+                                                    {childdependence && childdependence.length > 0 && childdependence.map((i) => (
+                                                        <option value={i.id}>{i.CateName}</option>
+                                                    ))}
+
+                                                </select>
+                                            </div>
+
+
+
+
+
+
+
                                             <div className="col-lg-12 mt-5 ">
                                                 <button type="submit" className="btn btn-primary w-25" disabled={isSubmitting}>
                                                     Add
@@ -393,7 +533,7 @@ export default function Addproduct() {
                                             </div>
                                         </div>
                                     </div>
-                                </form>
+                                </form >
                             </>
                         );
                     }}
@@ -405,7 +545,7 @@ export default function Addproduct() {
 
 
 
-            </div>
+            </div >
         </>
     )
 }

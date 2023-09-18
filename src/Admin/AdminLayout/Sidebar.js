@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes, faAddressBook, faCalendarDays, faLock, faClock, faUser, faHome, faBagShopping, faGaugeHigh, faL } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes, faTicket, faCalendarDays, faLock, faClock, faUser, faPerson, faBagShopping, faGaugeHigh, faL, faGear, faCopyright, } from "@fortawesome/free-solid-svg-icons";
 import logo from "../Assets/logo.png"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -111,7 +111,7 @@ export default function Sidebar() {
                             </div>
                         </Link>
 
-                        <Link className="d-flex mt-4 anchor3" to="/users" onClick={() => setIsOpen(false)}>
+                        <Link className="d-flex mt-4 anchor3" to="/banner" onClick={() => setIsOpen(false)}>
                             <div className="sidebar-position" onMouseEnter={PlusMinusEnter}
                                 onMouseLeave={PlusMinusLeave}>
                                 {isPlusMinus ? <FontAwesomeIcon icon={faUser} shake /> : <FontAwesomeIcon icon={faUser} />}
@@ -142,10 +142,10 @@ export default function Sidebar() {
 
 
 
-                        <Link className="d-flex  mt-4 anchor3" to="/contactdata"    >
+                        <Link className="d-flex  mt-4 anchor3" to="/coupon"    >
                             <div className="sidebar-position" onMouseEnter={profileEnter}
                                 onMouseLeave={profileLeave}>
-                                {isprofile ? <FontAwesomeIcon icon={faAddressBook} shake /> : <FontAwesomeIcon icon={faAddressBook} />}
+                                {isprofile ? <FontAwesomeIcon icon={faTicket} shake /> : <FontAwesomeIcon icon={faTicket} />}
                                 <span>Coupons</span>
                             </div>
                         </Link>
@@ -162,11 +162,24 @@ export default function Sidebar() {
                         <Link className="d-flex mt-4 anchor3" to="/allorder"    >
                             <div className="sidebar-position" onMouseEnter={profileEnter}
                                 onMouseLeave={profileLeave}>
-                                {isprofile ? <FontAwesomeIcon icon={faBagShopping} shake /> : <FontAwesomeIcon icon={faBagShopping} />}
+                                {isprofile ? <FontAwesomeIcon icon={faPerson} shake /> : <FontAwesomeIcon icon={faPerson} />}
                                 <span>Users</span>
                             </div>
                         </Link>
-
+                        <Link className="d-flex mt-4 anchor3" to="/setting"    >
+                            <div className="sidebar-position" onMouseEnter={profileEnter}
+                                onMouseLeave={profileLeave}>
+                                {isprofile ? <FontAwesomeIcon icon={faGear} shake /> : <FontAwesomeIcon icon={faGear} />}
+                                <span>settings</span>
+                            </div>
+                        </Link>
+                        <Link className="d-flex mt-4 anchor3" to="/brands"    >
+                            <div className="sidebar-position" onMouseEnter={profileEnter}
+                                onMouseLeave={profileLeave}>
+                                {isprofile ? <FontAwesomeIcon icon={faCopyright} shake /> : <FontAwesomeIcon icon={faCopyright} />}
+                                <span>Brands</span>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </div >
