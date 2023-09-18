@@ -12,6 +12,8 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export default function Test() {
 
     const [data, setData] = useState([])
+    const [brand, setbrand] = useState([])
+
     const [seconddata, setseconddata] = useState([])
     const [thirdddata, setthirdddata] = useState([])
     const [fourthddata, setfourthddata] = useState([])
@@ -20,7 +22,10 @@ export default function Test() {
     useEffect(() => {
 
         getdata()
+        getbrand()
     }, [])
+
+
 
     var settings = {
         dots: true,
@@ -62,6 +67,21 @@ export default function Test() {
                 setthirdddata(z)
                 setfourthddata(a)
                 setFifththddata(b)
+            })
+
+        }).catch(err => {
+            console.error(err)
+        });
+    }
+
+
+    const getbrand = () => {
+        let x = []
+        const db = firebaseApp.firestore();
+        db.collection('Brands').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                x.push(doc.data())
+                setbrand(x)
             })
 
         }).catch(err => {
@@ -185,7 +205,26 @@ export default function Test() {
                                 }
                             </div>
                         </div>
+                        <div className="container text-center mt-5">
+                            <h1 className='text-left'>Top Brand's</h1>
+                            <div className="row">
+                                {
+                                    brand && brand.length > 0 ? brand.map((i) => {
+                                        return (
+
+                                            <div className=" col-lg col-4 p-0 text-center mt-3 " >
+                                                <img src={
+                                                    i.BrandImage
+                                                } className='img-fluid w-100' />
+
+                                            </div>
+                                        )
+                                    }) : console.log("first")
+                                }
+                            </div>
+                        </div>
                     </div>
+
             }
 
         </div >
