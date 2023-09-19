@@ -8,6 +8,8 @@ import Slider from 'react-slick';
 import "./Test.css";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
+import ReactDOM from "react-dom";
+import { MultiSelect } from "react-multi-select-component";
 
 export default function Test() {
 
@@ -24,6 +26,7 @@ export default function Test() {
         getdata()
         getbrand()
     }, [])
+
 
 
 
@@ -224,7 +227,10 @@ export default function Test() {
                             </div>
                         </div>
                     </div>
+
+
             }
+
 
         </div >
     )

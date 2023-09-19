@@ -74,8 +74,8 @@ export default function Product() {
             }
         },
         {
-            name: "category",
-            label: "category",
+            name: "Maincat",
+            label: "Maincat",
             options: {
                 filter: true,
                 sort: false,
@@ -104,7 +104,7 @@ export default function Product() {
                 filter: true,
                 sort: false,
                 customBodyRender: (value, tableMeta, updateValue) => (
-                    <p className='description'>{value}</p>
+                    <p className='description'>{parse(value)}</p>
                 )
             }
         },
@@ -190,6 +190,8 @@ export default function Product() {
             }
         }
         handleShow()
+        console.log(preview)
+
     }
 
 
@@ -295,12 +297,24 @@ export default function Product() {
                                     preview && preview.length > 0 ? preview[0].prdname
                                         : console.log(" first")
                                 }</h1>
-                                <p id="description">Sku Code : {
+                                <p id="description"><b>Sku Code</b> : {
                                     preview && preview.length > 0 ? preview[0].Skucode
 
                                         : console.log(" first")
                                 }
                                 </p>
+
+                                <p id="description" className='mt-4'><b>Size</b> : {
+                                    preview && preview.length > 0 ? preview[0].size.map((i) => {
+                                        return (
+                                            <span className='' id="description">{i.value}</span>
+                                        )
+                                    })
+
+                                        : console.log(" first")
+                                }
+                                </p>
+
                                 <div class="price">
                                     <h1 id="number-discount"> ₹ {
                                         preview && preview.length > 0 ? preview[0].price

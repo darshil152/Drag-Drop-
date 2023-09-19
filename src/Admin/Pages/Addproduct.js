@@ -10,6 +10,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MultiSelect } from "react-multi-select-component";
 
 let x = []
 let imageUrl = []
@@ -43,6 +44,7 @@ export default function Addproduct() {
 
     const [Radiovalue, setRadiovalue] = useState("")
 
+
     const formikref = useRef('')
 
 
@@ -50,6 +52,30 @@ export default function Addproduct() {
         getdata()
         getBrands()
     }, []);
+
+
+    const shoesSize = [
+        { label: "7 ", value: "7" },
+        { label: "8 ", value: "8" },
+        { label: "8.5 ", value: "8.5" },
+        { label: "9 ", value: "9" },
+        { label: "9.5 ", value: "9.5" },
+        { label: "10 ", value: "10" },
+
+    ];
+
+
+
+    const [selected, setSelected] = useState([]);
+
+    const Clothsize = [
+        { label: "S ", value: "S" },
+        { label: "L", value: "L" },
+        { label: "XXl ", value: "XXl" },
+        { label: "XL ", value: "Xl" },
+        { label: "XXXl", value: "XXXl" },
+
+    ];
 
     const getBrands = () => {
         let x = []
@@ -230,7 +256,7 @@ export default function Addproduct() {
         let obj = {
             prdname: values.productname,
             Skucode: values.skucode,
-            size: Size,
+            size: selected,
             Image: img,
             description: description,
             price: values.price,
@@ -241,7 +267,6 @@ export default function Addproduct() {
             SubCate: childpush,
             childCat: ThirdCategoty,
         }
-        console.log(obj)
         let registerQuery = new Promise((resolve, reject) => {
             let db = firebaseApp.firestore();
             db.collection("Products").add(obj)
@@ -495,6 +520,7 @@ export default function Addproduct() {
                                                 <ReactQuill theme="snow" value={description} onChange={setDescriptoon} />
                                             </div>
 
+
                                             <div className="col-lg-6 mt-3">
                                                 <label htmlFor="description">Add Size:</label><br />
                                                 <a onClick={showinput} className='btn btn-primary text-white' id='showfield'>+ </a>
@@ -515,23 +541,29 @@ export default function Addproduct() {
                                                 {
 
                                                     Radiovalue == "shoes" ?
-                                                        <select name="cloth" id="cloth" onChange={e => setSize(e.target.value)}>
-                                                            <option value="7">7</option>
-                                                            <option value="8">8</option>
-                                                            <option value="9">9</option>
-                                                            <option value="9.5">9.5</option>
-                                                            <option value="10">10</option>
-                                                        </select> :
+                                                        <div>
+                                                            <h1>Select Fruits</h1>
+                                                            <pre>{JSON.stringify(selected)}</pre>
+                                                            <MultiSelect
+                                                                options={shoesSize}
+                                                                value={selected}
+                                                                onChange={setSelected}
+                                                                labelledBy="Select"
+                                                            />
+                                                        </div>
+                                                        :
 
                                                         Radiovalue == "Cloth" ?
-                                                            <select name="cars" id="cars" onChange={e => setSize(e.target.value)}>
-                                                                <option value="S">S</option>
-                                                                <option value="M">M</option>
-                                                                <option value="L">L</option>
-                                                                <option value="XL">XL</option>
-                                                                <option value="XXl">XXl</option>
-                                                                <option value="XXXl">XXXl</option>
-                                                            </select>
+                                                            <>
+                                                                <pre>{JSON.stringify(selected)}</pre>
+
+                                                                <MultiSelect
+                                                                    options={Clothsize}
+                                                                    selected={selected}
+                                                                    onChange={setSelected}
+                                                                    labelledBy={"Select"}
+                                                                />
+                                                            </>
                                                             : null
                                                 }
                                             </div>
@@ -558,7 +590,7 @@ export default function Addproduct() {
                                                     name="Maincategory"
                                                     onChange={selectSub}
                                                 >
-                                                    <option selected>Select the Category :</option>
+                                                    <option >Select the Category :</option>
 
                                                     {deoendence && deoendence.length > 0 && deoendence.map((i) => (
                                                         <option value={i.id}>{i.CateName}</option>
@@ -594,7 +626,7 @@ export default function Addproduct() {
                                                                 name="Maincategory"
                                                                 onChange={changebrand}
                                                             >
-                                                                <option selected>Select the Category :</option>
+                                                                <option >Select the Category :</option>
                                                                 {Brands && Brands.length > 0 && Brands.map((i) => (
                                                                     <option value={i.id}>{i.BrandName}</option>
                                                                 ))}
