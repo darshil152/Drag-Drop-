@@ -14,7 +14,7 @@ export default function Header() {
 
     return (
         <>
-            <nav class="navbar navbar-light bg-light shadow">
+            <nav class="navbar navbar-light  shadow">
                 <a class="navbar-brand" href="#">
                     <img src={menu} className='img-fluid ' width="50" height="30" alt="" onClick={showsidebar} />
                 </a>

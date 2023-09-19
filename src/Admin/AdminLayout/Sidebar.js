@@ -180,6 +180,8 @@ export default function Sidebar() {
                                 <span>Brands</span>
                             </div>
                         </Link>
+
+                        <i class="bi bi-card-heading"></i>
                     </div>
                 </div>
             </div >

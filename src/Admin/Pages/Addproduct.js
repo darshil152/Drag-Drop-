@@ -8,7 +8,8 @@ import firebaseApp from '../../Firebase/firebase';
 import Loader from '../../Loader';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 let x = []
 let imageUrl = []
@@ -23,16 +24,22 @@ export default function Addproduct() {
     const [description, setDescriptoon] = useState('')
     const [showRadio, setShowRadio] = useState(false)
     const [inputs, setinput] = useState(false)
+    const [input2, setinput2] = useState(false)
+
     const [subpush, setsubpush] = useState('')
     const [deoendence, setdependence] = useState([])
     const [childdependence, setChilddependence] = useState([])
+    const [Size, setSize] = useState('')
 
     const [childpush, setChildpish] = useState('')
+    const [ThirdCategoty, setThirdCategory] = useState('')
 
 
     const [mainCat, setMainCat] = useState([])
     const [subCat, setsubCat] = useState([])
     const [ChildCat, setChildCat] = useState([])
+    const [Brands, setBrands] = useState([])
+    const [selectBrand, setselectBrand] = useState('')
 
     const [Radiovalue, setRadiovalue] = useState("")
 
@@ -41,7 +48,23 @@ export default function Addproduct() {
 
     useEffect(() => {
         getdata()
+        getBrands()
     }, []);
+
+    const getBrands = () => {
+        let x = []
+        const db = firebaseApp.firestore();
+        db.collection('Brands').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                x.push(doc.data())
+                setBrands(x)
+            })
+
+        }).catch(err => {
+            console.error(err)
+        });
+    }
+
 
     const getdata = () => {
         let x = []
@@ -136,6 +159,9 @@ export default function Addproduct() {
     }
 
 
+    const changebrand = (e) => {
+        setselectBrand(e.target.value)
+    }
 
 
 
@@ -199,17 +225,23 @@ export default function Addproduct() {
 
 
     const submitdata = (values) => {
+
+
         let obj = {
             prdname: values.productname,
             Skucode: values.skucode,
-            category: values.category,
+            size: Size,
             Image: img,
             description: description,
             price: values.price,
             id: makeid(8),
-            status: Number(0)
+            status: Number(0),
+            brand: selectBrand,
+            Maincat: subpush,
+            SubCate: childpush,
+            childCat: ThirdCategoty,
         }
-        setImg([])
+        console.log(obj)
         let registerQuery = new Promise((resolve, reject) => {
             let db = firebaseApp.firestore();
             db.collection("Products").add(obj)
@@ -217,6 +249,8 @@ export default function Addproduct() {
                 .then((docRef) => {
                     console.log("Document written with ID: ", docRef);
                     resolve(docRef.id);
+                    setImg([])
+
                 })
                 .catch((error) => {
                     console.error("Please check form again ", error);
@@ -228,6 +262,8 @@ export default function Addproduct() {
         }).catch(error => {
             console.error(error)
         })
+
+
     }
 
 
@@ -235,6 +271,24 @@ export default function Addproduct() {
         setinput(true)
         console.log(inputs)
         document.getElementById('showfield').style.display = "none"
+    }
+
+    const showinputtwo = () => {
+        if (Brands.length > 0) {
+            setinput2(true)
+        } else {
+            toast.warn(<span style={{ color: "#757575" }}>Please add your brand <a href={"/brands"} style={{ textDecoration: "none", fontWeight: 'bold' }}> here </a>. </span>, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+        document.getElementById('showfieldtwo').style.display = "none"
     }
 
 
@@ -267,7 +321,6 @@ export default function Addproduct() {
     }
 
     const selectSub = (e) => {
-        console.log(e.target.value)
         setChildpish(e.target.value)
         let x = []
         let flag = false
@@ -285,6 +338,10 @@ export default function Addproduct() {
         }
     }
 
+    const thirdCategory = (e) => {
+        setThirdCategory(e.target.value)
+
+    }
 
 
 
@@ -438,22 +495,27 @@ export default function Addproduct() {
                                                 <ReactQuill theme="snow" value={description} onChange={setDescriptoon} />
                                             </div>
 
-                                            <div className="col-lg-12 mt-5">
+                                            <div className="col-lg-6 mt-3">
                                                 <label htmlFor="description">Add Size:</label><br />
-                                                <button onClick={showinput} className='btn btn-primary' id='showfield'>+</button>
+                                                <a onClick={showinput} className='btn btn-primary text-white' id='showfield'>+ </a>
                                                 {
                                                     inputs == true ?
-                                                        <div className='check' >
-                                                            Shoes Size :<input type="radio" value="shoes" name='shoes' onChange={saveradio} /><br />
-                                                            Cloth Size :<input type="radio" value="Cloth" name='shoes' onChange={saveradio} />
+                                                        <div className='check d-flex justify-content-center' >
+                                                            <div className='ml-3'>
+                                                                Shoes Size:<input type="radio" value="shoes" name='shoes' onChange={saveradio} />
+                                                            </div>
+                                                            <div className='ml-3'>
+                                                                Cloth Size  <input type="radio" value="Cloth" name='shoes' onChange={saveradio} />
+                                                            </div>
                                                         </div>
                                                         : null
                                                 }
-
+                                            </div>
+                                            <div className="col-lg-6 mt-5">
                                                 {
 
                                                     Radiovalue == "shoes" ?
-                                                        <select name="cloth" id="cloth" >
+                                                        <select name="cloth" id="cloth" onChange={e => setSize(e.target.value)}>
                                                             <option value="7">7</option>
                                                             <option value="8">8</option>
                                                             <option value="9">9</option>
@@ -462,7 +524,7 @@ export default function Addproduct() {
                                                         </select> :
 
                                                         Radiovalue == "Cloth" ?
-                                                            <select name="cars" id="cars">
+                                                            <select name="cars" id="cars" onChange={e => setSize(e.target.value)}>
                                                                 <option value="S">S</option>
                                                                 <option value="M">M</option>
                                                                 <option value="L">L</option>
@@ -475,8 +537,7 @@ export default function Addproduct() {
                                             </div>
 
 
-
-                                            <div className="col-lg-4 ">
+                                            <div className="col-lg-4 mt-5 ">
                                                 <label className="lbl-comn-info">Choose Main Category : <span className="text-danger"></span></label>
                                                 <select className="selecttype"
                                                     name="Maincategory"
@@ -491,7 +552,7 @@ export default function Addproduct() {
                                                 </select>
                                             </div>
 
-                                            <div className="col-lg-4 mb-3">
+                                            <div className="col-lg-4 mt-5 mb-3">
                                                 <label className="lbl-comn-info">Choose Sub-Category : <span className="text-danger"></span></label>
                                                 <select className="selecttype"
                                                     name="Maincategory"
@@ -506,10 +567,12 @@ export default function Addproduct() {
                                                 </select>
                                             </div>
 
-                                            <div className="col-lg-4 mb-3">
+                                            <div className="col-lg-4 mt-5 mb-3">
                                                 <label className="lbl-comn-info">Choose Child Category : <span className="text-danger"></span></label>
                                                 <select className="selecttype"
                                                     name="Maincategory"
+                                                    onChange={thirdCategory}
+
                                                 >
                                                     <option>Select the Category :</option>
 
@@ -520,12 +583,31 @@ export default function Addproduct() {
                                                 </select>
                                             </div>
 
+                                            <div className="col-lg-6">
+                                                <label className="lbl-comn-info">Choose Brand : <span className="text-danger"></span></label><br />
+
+                                                <a onClick={showinputtwo} className='btn btn-primary text-white' id='showfieldtwo'>+ </a>
+                                                {
+                                                    input2 == true ?
+                                                        <>
+                                                            <select className="selecttype"
+                                                                name="Maincategory"
+                                                                onChange={changebrand}
+                                                            >
+                                                                <option selected>Select the Category :</option>
+                                                                {Brands && Brands.length > 0 && Brands.map((i) => (
+                                                                    <option value={i.id}>{i.BrandName}</option>
+                                                                ))}
+                                                            </select>
+                                                        </>
+                                                        : null
+                                                }
+                                            </div>
 
 
+                                            <div className="col-lg-12 mt-5 mb-3">
 
-
-
-
+                                            </div>
                                             <div className="col-lg-12 mt-5 ">
                                                 <button type="submit" className="btn btn-primary w-25" disabled={isSubmitting}>
                                                     Add
@@ -538,14 +620,8 @@ export default function Addproduct() {
                         );
                     }}
                 </Formik>
-
-
-
-
-
-
-
             </div >
+            <ToastContainer />
         </>
     )
 }
