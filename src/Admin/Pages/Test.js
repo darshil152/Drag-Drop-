@@ -20,6 +20,7 @@ export default function Test() {
     const [thirdddata, setthirdddata] = useState([])
     const [fourthddata, setfourthddata] = useState([])
     const [Fifththddata, setFifththddata] = useState([])
+    const [brandstate, setBrandstate] = useState([])
 
     useEffect(() => {
 
@@ -99,6 +100,42 @@ export default function Test() {
         window.location.href = i.Bannerurl
     }
 
+
+    let du = ''
+    const checks = (e) => {
+
+
+
+        du = e.target.value
+
+        let x = brandstate
+        var values = [];
+
+
+        var checkboxes = document.getElementsByName('language');
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked == true) {
+                values.push(checkboxes[i].value)
+            }
+            console.log(values)
+        }
+
+
+        const db = firebaseApp.firestore();
+        db.collection('Brands').where("BrandName", "==", values).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+
+                console.log(doc.data(), "Array value")
+                // x.push(doc.data())
+                // setBrandstate(x) 
+            })
+
+        }).catch(err => {
+            console.error(err)
+        });
+
+    }
+
     return (
 
 
@@ -150,7 +187,6 @@ export default function Test() {
                                 }
                             </Slider >
                         </div>
-                        {console.log(thirdddata[0])}
                         <div className="container text-center mt-5">
                             <h1 className='text-left'>Men's Category</h1>
                             <div className="row">
@@ -226,6 +262,19 @@ export default function Test() {
                                 }
                             </div>
                         </div>
+
+
+                        <div className="container text-center mt-5">
+                            <h1 className='text-left'>Top Brand's</h1>
+                            <input type="checkbox" name="language" onChange={checks} value="Adidas" /> Adidas <br />
+                            <input type="checkbox" name="language" onChange={checks} value="Holiester" /> Holiester <br />
+                            <input type="checkbox" name="language" onChange={checks} value="Lacoste" /> Lacoste <br />
+                            <input type="checkbox" name="language" onChange={checks} value="Supreme" /> Supreme <br />
+                            <input type="checkbox" name="language" onChange={checks} value="Nike" /> Nike <br />
+                            <button >Submit</button>
+                        </div>
+
+
                     </div>
 
 

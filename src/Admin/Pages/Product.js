@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Modal, Button } from "react-bootstrap";
 import parse from 'html-react-parser';
-
+import { Context } from '../../Context/Userrole';
 
 let xy = []
 
@@ -242,113 +242,121 @@ export default function Product() {
     }
 
     return (
-        <>
-            <Layout />
-            <div className="main-section-left">
-                <h1 className='text-center'>All Products</h1>
-                <div className="container-fluid">
-                    <div className="row">
-                        <div className="col-lg-12 mt-5">
-                            <CacheProvider value={muiCache}>
-                                <ThemeProvider theme={createTheme()}>
-                                    <MUIDataTable
-                                        title={"All Product"}
-                                        data={data}
-                                        columns={columns}
-                                        options={options}
-                                    />
-                                </ThemeProvider>
-                            </CacheProvider>
+        <Context.Consumer>
+
+            {
+                value => <>
+                    {
+                        console.log(value)
+                    }
+
+
+
+                    <Layout />
+                    <div className="main-section-left">
+                        <h1 className='text-center'>All Products</h1>
+                        <div className="container-fluid">
+                            <div className="row">
+                                <div className="col-lg-12 mt-5">
+                                    <CacheProvider value={muiCache}>
+                                        <ThemeProvider theme={createTheme()}>
+                                            <MUIDataTable
+                                                title={"All Product"}
+                                                data={data}
+                                                columns={columns}
+                                                options={options}
+                                            />
+                                        </ThemeProvider>
+                                    </CacheProvider>
+                                </div>
+                            </div>
                         </div>
+                        <Modal show={showModal} onHide={handleClose} size="xl">
+                            <Modal.Header>
+                                <Modal.Title>
+                                    Product Preview
+                                </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+
+                                <div class="containers">
+                                    <div class="left-side">
+                                        {
+                                            preview && preview.length > 0 ? <img id="images" src={mainimg} className='img-fluid' /> : console.log("first")
+                                        }
+                                        <div className="mt-5">
+                                            {
+                                                preview && preview.length > 0 && preview[0].Image.map((index) => {
+                                                    return (
+                                                        <>
+                                                            <img src={index} style={{ width: "50px", height: "60px" }} onClick={() => changeimg(index)} />
+                                                        </>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="right-side">
+                                        <p id="perfume">
+                                            {
+                                                preview && preview.length > 0 ? preview[0].category : console.log(" first")
+                                            }
+                                        </p>
+                                        <h1 id="header">{
+                                            preview && preview.length > 0 ? preview[0].prdname
+                                                : console.log(" first")
+                                        }</h1>
+
+                                        <p id="description"><b>Sku Code</b> : {
+                                            preview && preview.length > 0 ? preview[0].Skucode
+
+                                                : console.log(" first")
+                                        }
+                                        </p>
+
+
+                                        <p id="description" className='mt-4'><b>Size</b> : {
+                                            preview && preview.length > 0 ? preview[0].size.map((i) => {
+                                                return (
+                                                    <span className='' id="description">{i.value}</span>
+                                                )
+                                            }) : console.log("asd")
+                                        }
+                                        </p>
+
+                                        <div class="price mt-3">
+                                            <h1 id="number-discount"> ₹ {
+                                                preview && preview.length > 0 ? preview[0].price
+
+                                                    : console.log(" first")
+                                            }</h1>
+                                        </div>
+
+                                        <div class="price mt-3">
+                                            <p id="description"> <b>Description</b> : {
+                                                preview && preview.length > 0 ?
+                                                    parse(preview[0].description)
+
+                                                    : console.log(" first")
+                                            }
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Close
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
-                </div>
-                <Modal show={showModal} onHide={handleClose} size="lg">
-                    <Modal.Header>
-                        <Modal.Title>
-                            Product Preview
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
+                </>
+            }
+        </Context.Consumer>
 
-                        <div class="containers">
-                            <div class="left-side">
-                                {
-                                    preview && preview.length > 0 ? <img id="images" src={mainimg} className='img-fluid' /> : console.log("first")
-                                }
-                                <div className="mt-5">
-                                    {
-                                        preview && preview.length > 0 && preview[0].Image.map((index) => {
-                                            return (
-                                                <>
-                                                    <img src={index} style={{ width: "50px", height: "60px" }} onClick={() => changeimg(index)} />
-                                                </>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                            <div class="right-side">
-                                <p id="perfume">
-                                    {
-                                        preview && preview.length > 0 ? preview[0].category : console.log(" first")
-                                    }
-                                </p>
-                                <h1 id="header">{
-                                    preview && preview.length > 0 ? preview[0].prdname
-                                        : console.log(" first")
-                                }</h1>
-                                <p id="description"><b>Sku Code</b> : {
-                                    preview && preview.length > 0 ? preview[0].Skucode
-
-                                        : console.log(" first")
-                                }
-                                </p>
-
-                                <p id="description" className='mt-4'><b>Size</b> : {
-                                    preview && preview.length > 0 ? preview[0].size.map((i) => {
-                                        return (
-                                            <span className='' id="description">{i.value}</span>
-                                        )
-                                    })
-
-                                        : console.log(" first")
-                                }
-                                </p>
-
-                                <div class="price">
-                                    <h1 id="number-discount"> ₹ {
-                                        preview && preview.length > 0 ? preview[0].price
-
-                                            : console.log(" first")
-                                    }</h1>
-                                </div>
-                                <p id="description"> <b>Description</b> : {
-                                    preview && preview.length > 0 ?
-                                        parse(preview[0].description)
-
-                                        : console.log(" first")
-                                }
-                                </p>
-
-
-
-                            </div>
-
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-
-
-
-
-
-
-        </>
     )
 }

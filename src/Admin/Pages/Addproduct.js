@@ -23,9 +23,9 @@ export default function Addproduct() {
     const [preview, setPreview] = useState(datas)
     const [img, setImg] = useState([]);
     const [description, setDescriptoon] = useState('')
-    const [showRadio, setShowRadio] = useState(false)
     const [inputs, setinput] = useState(false)
     const [input2, setinput2] = useState(false)
+    const [showRadio, setShowRadio] = useState(false)
 
     const [subpush, setsubpush] = useState('')
     const [deoendence, setdependence] = useState([])
@@ -64,10 +64,6 @@ export default function Addproduct() {
 
     ];
 
-
-
-    const [selected, setSelected] = useState([]);
-
     const Clothsize = [
         { label: "S ", value: "S" },
         { label: "L", value: "L" },
@@ -76,6 +72,18 @@ export default function Addproduct() {
         { label: "XXXl", value: "XXXl" },
 
     ];
+
+    const PermumeSize = [
+        { label: "100ml ", value: "100ml" },
+        { label: "250ml", value: "250ml" },
+        { label: "500ml ", value: "500ml" },
+
+
+    ];
+
+    const [selected, setSelected] = useState([]);
+
+
 
     const getBrands = () => {
         let x = []
@@ -533,6 +541,9 @@ export default function Addproduct() {
                                                             <div className='ml-3'>
                                                                 Cloth Size  <input type="radio" value="Cloth" name='shoes' onChange={saveradio} />
                                                             </div>
+                                                            <div className='ml-3'>
+                                                                Perfume Size  <input type="radio" value="Perfume" name='shoes' onChange={saveradio} />
+                                                            </div>
                                                         </div>
                                                         : null
                                                 }
@@ -542,7 +553,7 @@ export default function Addproduct() {
 
                                                     Radiovalue == "shoes" ?
                                                         <div>
-                                                            <h1>Select Fruits</h1>
+                                                            <h1>Select shoes size</h1>
                                                             <pre>{JSON.stringify(selected)}</pre>
                                                             <MultiSelect
                                                                 options={shoesSize}
@@ -554,17 +565,30 @@ export default function Addproduct() {
                                                         :
 
                                                         Radiovalue == "Cloth" ?
-                                                            <>
+                                                            <div>
+                                                                <h1>Select cloth size</h1>
                                                                 <pre>{JSON.stringify(selected)}</pre>
-
                                                                 <MultiSelect
                                                                     options={Clothsize}
-                                                                    selected={selected}
+                                                                    value={selected}
                                                                     onChange={setSelected}
-                                                                    labelledBy={"Select"}
+                                                                    labelledBy="Select"
                                                                 />
-                                                            </>
-                                                            : null
+                                                            </div>
+                                                            :
+                                                            Radiovalue == "Perfume" ?
+                                                                <div>
+                                                                    <h1>Select cloth size</h1>
+                                                                    <pre>{JSON.stringify(selected)}</pre>
+                                                                    <MultiSelect
+                                                                        options={PermumeSize}
+                                                                        value={selected}
+                                                                        onChange={setSelected}
+                                                                        labelledBy="Select"
+                                                                    />
+                                                                </div>
+
+                                                                : null
                                                 }
                                             </div>
 
@@ -586,16 +610,11 @@ export default function Addproduct() {
 
                                             <div className="col-lg-4 mt-5 mb-3">
                                                 <label className="lbl-comn-info">Choose Sub-Category : <span className="text-danger"></span></label>
-                                                <select className="selecttype"
-                                                    name="Maincategory"
-                                                    onChange={selectSub}
-                                                >
+                                                <select className="selecttype" name="Maincategory" onChange={selectSub}>
                                                     <option >Select the Category :</option>
-
                                                     {deoendence && deoendence.length > 0 && deoendence.map((i) => (
                                                         <option value={i.id}>{i.CateName}</option>
                                                     ))}
-
                                                 </select>
                                             </div>
 
@@ -634,11 +653,6 @@ export default function Addproduct() {
                                                         </>
                                                         : null
                                                 }
-                                            </div>
-
-
-                                            <div className="col-lg-12 mt-5 mb-3">
-
                                             </div>
                                             <div className="col-lg-12 mt-5 ">
                                                 <button type="submit" className="btn btn-primary w-25" disabled={isSubmitting}>
