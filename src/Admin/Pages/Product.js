@@ -10,17 +10,21 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { Modal, Button } from "react-bootstrap";
 import parse from 'html-react-parser';
 import { Context } from '../../Context/Userrole';
+import { Link, useNavigate } from "react-router-dom";
 
 let xy = []
-
 export default function Product() {
 
     useEffect(() => {
+        const url = window.location.href;
+        var id = url.substring(url.lastIndexOf('/') + 1);
         getdata()
+        getpass(id)
     }, [])
 
     const parse = require('html-react-parser');
 
+    const navigate = useNavigate();
 
     const [data, setData] = useState([])
     const [preview, setPreview] = useState(xy)
@@ -49,6 +53,43 @@ export default function Product() {
             console.error(err)
         });
     }
+
+    const getpass = (id) => {
+
+        let isdatafind = false
+        let dummy = ""
+        const db = firebaseApp.firestore();
+        db.collection('Users').where("id", "==", id).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                isdatafind = true
+                console.log(doc.data().password, localStorage.getItem('sc'))
+                dummy = doc.data().password
+
+            })
+        }).catch(err => {
+            console.error(err)
+        });
+
+
+
+        // setTimeout(() => {
+        //     if (isdatafind) {
+        //         if (Number(localStorage.getItem('UserRole')) == 1) {
+        //             if (localStorage.getItem('sc') !== dummy) {
+        //                 window.location.href = '/login'
+        //             }
+        //         }
+        //     } else {
+        //         window.location.href = '/login'
+        //         console.log("as")
+        //     }
+        // }, 900);
+    }
+
+
+
+
+
 
 
     const columns = [
@@ -104,7 +145,9 @@ export default function Product() {
                 filter: true,
                 sort: false,
                 customBodyRender: (value, tableMeta, updateValue) => (
-                    <p className='description'>{parse(value)}</p>
+                    <>
+                        <p className='description'>{value}</p>
+                    </>
                 )
             }
         },
@@ -123,7 +166,6 @@ export default function Product() {
                 )
             }
         },
-
         {
             name: "id",
             label: "action",
@@ -138,8 +180,9 @@ export default function Product() {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item onClick={() => previews(value)}>Preview</Dropdown.Item>
-                                    <Dropdown.Item >Edit </Dropdown.Item>
                                     <Dropdown.Item onClick={() => deletedata(tableMeta)}>Delete</Dropdown.Item>
+                                    <Dropdown.Item onClick={() => edit(value)}>Edit</Dropdown.Item>
+
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
@@ -150,9 +193,16 @@ export default function Product() {
     ];
 
 
+
     const changetoggle = (e, tableMeta) => {
         console.log(e, tableMeta.rowData)
         updatestatus(e, tableMeta.rowData[7])
+    }
+
+    const edit = (value) => {
+        console.log(value)
+        navigate("/addproduct/" + value)
+        localStorage.setItem("mmatchid", JSON.stringify(value))
     }
 
     const updatestatus = (e, x) => {
@@ -197,6 +247,7 @@ export default function Product() {
 
 
     const deletedata = (tableMeta) => {
+        console.log(tableMeta)
         let filterdata = data.filter((i) => i.id != tableMeta.rowData[6])
         // updateproducts(filterdata, tableMeta.rowData[6])
     }

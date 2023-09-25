@@ -11,13 +11,14 @@ import 'react-quill/dist/quill.snow.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MultiSelect } from "react-multi-select-component";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 let x = []
 let imageUrl = []
 
 export default function Addproduct() {
 
-
+    const [id, setId] = useState('')
     const [datas, setData] = useState([]);
     const [showLoader, setshowLoader] = useState(false);
     const [preview, setPreview] = useState(datas)
@@ -26,11 +27,11 @@ export default function Addproduct() {
     const [inputs, setinput] = useState(false)
     const [input2, setinput2] = useState(false)
     const [showRadio, setShowRadio] = useState(false)
+    const [fetchdata, setFetchdata] = useState([])
 
     const [subpush, setsubpush] = useState('')
     const [deoendence, setdependence] = useState([])
     const [childdependence, setChilddependence] = useState([])
-    const [Size, setSize] = useState('')
 
     const [childpush, setChildpish] = useState('')
     const [ThirdCategoty, setThirdCategory] = useState('')
@@ -48,10 +49,61 @@ export default function Addproduct() {
     const formikref = useRef('')
 
 
+    const [ProdcutName, setProducts] = useState('')
+    const [sku, setSku] = useState('')
+    const [price, setPrice] = useState('')
+    const [dummy, setdummy] = useState('')
+    const [pic, setpic] = useState([])
+    const [Size, setSize] = useState([])
+
+
     useEffect(() => {
+        var url = window.location.href
+        var ids = url.substring(url.lastIndexOf('/') + 1);
+        setId(ids);
+        getEditdata(ids)
         getdata()
         getBrands()
     }, []);
+
+
+    const deletepic = (idd) => {
+        console.log(idd)
+        let x = fetchdata[0].Image
+        let filterdata = x.filter((i) => i != idd)
+
+        updataImage(filterdata)
+
+        // const storage = getStorage();
+        // const desertRef = ref(storage, i);
+        // // Delete the file
+        // deleteObject(desertRef).then(() => {
+        //     // File deleted successfully
+        //     console.log(" File deleted successfully")
+        // }).catch((error) => {
+        //     // Uh-oh, an error occurred!
+        // });
+    }
+
+    const updataImage = (filterdata) => {
+        const db = firebaseApp.firestore();
+        db.collection('Products').where("id", "==", id).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var updateCollection = db.collection("Products").doc(doc.ref.id);
+                return updateCollection.update({
+                    Image: filterdata
+                })
+                    .then(() => {
+                        getEditdata()
+                    })
+                    .catch((error) => {
+                        console.error("Error updating document: ", error);
+                    });
+            })
+        }).catch(err => {
+            console.error(err)
+        });
+    }
 
 
     const shoesSize = [
@@ -77,12 +129,42 @@ export default function Addproduct() {
         { label: "100ml ", value: "100ml" },
         { label: "250ml", value: "250ml" },
         { label: "500ml ", value: "500ml" },
-
-
     ];
+
+
 
     const [selected, setSelected] = useState([]);
 
+
+
+    const getEditdata = (ids) => {
+        console.log(ids)
+        let entry = []
+        let flag = false
+        const db = firebaseApp.firestore();
+        db.collection('Products').where("id", "==", ids).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data())
+                entry.push(doc.data())
+                setFetchdata(entry)
+                setProducts(doc.data().prdname)
+                setSku(doc.data().Skucode)
+                setPrice(doc.data().price)
+                setDescriptoon(doc.data().description)
+                setdummy(doc.data().Maincat)
+                setpic(doc.data().Image)
+                setSize(doc.data().size)
+                setSize(doc.data().brand)
+                const { setFieldValue } = formikref.current;
+                setFieldValue('productname', doc.data().prdname)
+                setFieldValue('skucode', doc.data().Skucode)
+                setFieldValue('price', doc.data().price)
+            })
+
+        }).catch(err => {
+            console.error(err)
+        });
+    }
 
 
     const getBrands = () => {
@@ -255,6 +337,21 @@ export default function Addproduct() {
     }
 
 
+    const finalsubmit = (values) => {
+
+        if (JSON.parse(localStorage.getItem('mmatchid')) == id) {
+            updateData(values)
+        } else {
+            submitdata(values)
+        }
+    }
+
+    const updateData = (values) => {
+        let obj = {
+            prdname: values.productname,
+        }
+        console.log(obj)
+    }
 
 
 
@@ -275,26 +372,27 @@ export default function Addproduct() {
             SubCate: childpush,
             childCat: ThirdCategoty,
         }
-        let registerQuery = new Promise((resolve, reject) => {
-            let db = firebaseApp.firestore();
-            db.collection("Products").add(obj)
+        console.log(obj)
+        // let registerQuery = new Promise((resolve, reject) => {
+        //     let db = firebaseApp.firestore();
+        //     db.collection("Products").add(obj)
 
-                .then((docRef) => {
-                    console.log("Document written with ID: ", docRef);
-                    resolve(docRef.id);
-                    setImg([])
+        //         .then((docRef) => {
+        //             console.log("Document written with ID: ", docRef);
+        //             resolve(docRef.id);
+        //             setImg([])
 
-                })
-                .catch((error) => {
-                    console.error("Please check form again ", error);
-                    reject(error);
-                });
-        });
-        registerQuery.then(result => {
-            console.warn('register successful')
-        }).catch(error => {
-            console.error(error)
-        })
+        //         })
+        //         .catch((error) => {
+        //             console.error("Please check form again ", error);
+        //             reject(error);
+        //         });
+        // });
+        // registerQuery.then(result => {
+        //     console.warn('register successful')
+        // }).catch(error => {
+        //     console.error(error)
+        // })
 
 
     }
@@ -358,7 +456,6 @@ export default function Addproduct() {
         let x = []
         let flag = false
         for (let i = 0; i < ChildCat.length; i++) {
-            console.log(ChildCat)
             if (ChildCat[i].SubCategory == e.target.value) {
                 x.push(ChildCat[i])
                 flag = true
@@ -391,10 +488,11 @@ export default function Addproduct() {
 
 
                 <Formik
+
                     initialValues={{ productname: "", skucode: "", price: "", }}
                     innerRef={formikref}
                     onSubmit={(values, { setSubmitting }) => {
-                        submitdata(values)
+                        finalsubmit(values)
                         clearvalue()
                     }}
                     validationSchema={Yup.object().shape({
@@ -421,6 +519,7 @@ export default function Addproduct() {
                         } = props;
                         return (
                             <>
+
                                 <form onSubmit={handleSubmit}>
                                     <div className="container text-center cardStyle">
                                         <h1 className='text-center mb-5'>Add Product</h1>
@@ -441,6 +540,7 @@ export default function Addproduct() {
                                                     <div className="input feedback">{errors.productname}</div>
                                                 )}
                                             </div>
+
 
                                             <div className="col-lg-6">
                                                 <label htmlFor="skucode">Sku Code:</label>
@@ -487,7 +587,16 @@ export default function Addproduct() {
                                                             <b class="btn btn-primary">
                                                                 <i class="material-icons"></i> Upload Product Images</b>
                                                             <input type="file" class="fileInput" onChange={(e) => Imgchange(e.target.files)} multiple /></label>
-
+                                                        {
+                                                            pic.map((i) => {
+                                                                return (
+                                                                    <>
+                                                                        <img src={i} className='img-fluid' /><br />
+                                                                        <button onClick={() => deletepic(i)}>✖</button>
+                                                                    </>
+                                                                )
+                                                            })
+                                                        }
                                                     </div>
                                                     <DragDropContext onDragEnd={onDragEnd}>
                                                         <Droppable droppableId="droppable" direction="horizontal">

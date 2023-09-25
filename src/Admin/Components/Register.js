@@ -65,7 +65,8 @@ export default function Register() {
                 email: formdata.email,
                 password: formdata.password,
                 contact: formdata.number,
-                id: makeid(6)
+                id: makeid(6),
+                userRole: 1,
             }
 
             let registerQuery = new Promise((resolve, reject) => {

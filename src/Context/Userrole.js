@@ -12,6 +12,7 @@ export default function Userrole(props) {
     const update = (role) => {
         setUrole(role)
     }
+
     return (
         <>
             <Context.Provider value={{ fnc: update, urole: urole, data: data }}>

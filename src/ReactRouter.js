@@ -10,6 +10,7 @@ import Settings from './Admin/Pages/Settings';
 import Brands from './Admin/Pages/Brands';
 import Login from './Admin/Components/Login';
 import Register from './Admin/Components/Register';
+import Protecteduser from './Admin/Components/Protecteduser';
 
 export default function ReactRouter() {
     return (
@@ -18,6 +19,7 @@ export default function ReactRouter() {
                 <Route path="/" element={<Product />} />
 
                 <Route path="/addproduct" element={<Addproduct />} />
+                <Route path="/addproduct/:id" element={<Addproduct />} />
 
                 <Route path="/product/:id" element={<Product />} />
                 <Route path="/product" element={<Product />} />
@@ -29,6 +31,13 @@ export default function ReactRouter() {
                 <Route path="/brands" element={<Brands />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+
+
+                <Route path="/product/:id" element={
+                    <Protecteduser>
+                        <Product />
+                    </Protecteduser>} />
+
 
 
             </Routes>
