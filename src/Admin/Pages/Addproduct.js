@@ -16,6 +16,7 @@ import { getStorage, ref, deleteObject } from "firebase/storage";
 let x = []
 let imageUrl = []
 
+
 export default function Addproduct() {
 
     const [id, setId] = useState('')
@@ -45,6 +46,7 @@ export default function Addproduct() {
 
     const [Radiovalue, setRadiovalue] = useState("")
 
+    const [SizeName, setSizeName] = useState("")
 
     const formikref = useRef('')
 
@@ -53,8 +55,13 @@ export default function Addproduct() {
     const [sku, setSku] = useState('')
     const [price, setPrice] = useState('')
     const [dummy, setdummy] = useState('')
+    const [dummySub, setdummySub] = useState('')
+    const [dummyChild, setdummyChild] = useState('')
+
+
     const [pic, setpic] = useState([])
     const [Size, setSize] = useState([])
+    const [Ebrand, setEbrand] = useState('')
 
 
     useEffect(() => {
@@ -151,10 +158,13 @@ export default function Addproduct() {
                 setSku(doc.data().Skucode)
                 setPrice(doc.data().price)
                 setDescriptoon(doc.data().description)
-                setdummy(doc.data().Maincat)
+                setsubpush(doc.data().Maincat)
+                setChildpish(doc.data().SubCate)
+                setThirdCategory(doc.data().childCat)
                 setpic(doc.data().Image)
                 setSize(doc.data().size)
-                setSize(doc.data().brand)
+                setEbrand(doc.data().brand)
+                setSizeName(doc.data().SizeName)
                 const { setFieldValue } = formikref.current;
                 setFieldValue('productname', doc.data().prdname)
                 setFieldValue('skucode', doc.data().Skucode)
@@ -276,6 +286,7 @@ export default function Addproduct() {
 
 
     const changebrand = (e) => {
+        setEbrand(e.target.value)
         setselectBrand(e.target.value)
     }
 
@@ -349,8 +360,38 @@ export default function Addproduct() {
     const updateData = (values) => {
         let obj = {
             prdname: values.productname,
+            Skucode: values.skucode,
+            Image: img,
+            description: description,
+            price: values.price,
+            brand: Ebrand,
         }
         console.log(obj)
+        const db = firebaseApp.firestore();
+
+        db.collection('Products').where("id", "==", id).get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                var updateCollection = db.collection("Products").doc(doc.ref.id);
+                return updateCollection.update({
+                    prdname: values.productname,
+                    Skucode: values.skucode,
+                    description: description,
+                    price: values.price,
+                    brand: Ebrand,
+                    Image: img,
+
+                })
+                    .then(() => {
+                        console.log("Document successfully updated!");
+                    })
+                    .catch((error) => {
+                        // The document probably doesn't exist.
+                        console.error("Error updating document: ", error);
+                    });
+            })
+        }).catch(err => {
+            console.error(err)
+        });
     }
 
 
@@ -371,28 +412,30 @@ export default function Addproduct() {
             Maincat: subpush,
             SubCate: childpush,
             childCat: ThirdCategoty,
+            SizeName: SizeName,
+
         }
         console.log(obj)
-        // let registerQuery = new Promise((resolve, reject) => {
-        //     let db = firebaseApp.firestore();
-        //     db.collection("Products").add(obj)
+        let registerQuery = new Promise((resolve, reject) => {
+            let db = firebaseApp.firestore();
+            db.collection("Products").add(obj)
 
-        //         .then((docRef) => {
-        //             console.log("Document written with ID: ", docRef);
-        //             resolve(docRef.id);
-        //             setImg([])
+                .then((docRef) => {
+                    console.log("Document written with ID: ", docRef);
+                    resolve(docRef.id);
+                    setImg([])
 
-        //         })
-        //         .catch((error) => {
-        //             console.error("Please check form again ", error);
-        //             reject(error);
-        //         });
-        // });
-        // registerQuery.then(result => {
-        //     console.warn('register successful')
-        // }).catch(error => {
-        //     console.error(error)
-        // })
+                })
+                .catch((error) => {
+                    console.error("Please check form again ", error);
+                    reject(error);
+                });
+        });
+        registerQuery.then(result => {
+            console.warn('register successful')
+        }).catch(error => {
+            console.error(error)
+        })
 
 
     }
@@ -426,11 +469,13 @@ export default function Addproduct() {
 
     const saveradio = (e) => {
         setRadiovalue(e.target.value)
+        setSizeName(e.target.value)
     }
 
     const selectMain = (e) => {
         setsubpush(e.target.value)
         findcate(e.target.value)
+        setdummy(e.target.value)
     }
 
     const findcate = (val) => {
@@ -452,6 +497,7 @@ export default function Addproduct() {
     }
 
     const selectSub = (e) => {
+        setdummySub(e.target.value)
         setChildpish(e.target.value)
         let x = []
         let flag = false
@@ -469,7 +515,9 @@ export default function Addproduct() {
     }
 
     const thirdCategory = (e) => {
+        setdummyChild(e.target.value)
         setThirdCategory(e.target.value)
+
 
     }
 
@@ -560,7 +608,7 @@ export default function Addproduct() {
 
 
 
-                                            <div className="col-lg-6 mt-5">
+                                            <div className="col-lg-12 mt-5">
                                                 <label htmlFor="price">price:</label>
                                                 <input
 
@@ -577,7 +625,7 @@ export default function Addproduct() {
                                                 )}
                                             </div>
 
-                                            <div className="col-lg-6" style={{ marginTop: "30px" }}>
+                                            <div className="col-lg-12" style={{ marginTop: "30px" }}>
                                                 <div className="main_content">
                                                     <div className="container">
 
@@ -591,7 +639,7 @@ export default function Addproduct() {
                                                             pic.map((i) => {
                                                                 return (
                                                                     <>
-                                                                        <img src={i} className='img-fluid' /><br />
+                                                                        <img src={i} className='img-fluid' />
                                                                         <button onClick={() => deletepic(i)}>✖</button>
                                                                     </>
                                                                 )
@@ -637,7 +685,6 @@ export default function Addproduct() {
                                                 <ReactQuill theme="snow" value={description} onChange={setDescriptoon} />
                                             </div>
 
-
                                             <div className="col-lg-6 mt-3">
                                                 <label htmlFor="description">Add Size:</label><br />
                                                 <a onClick={showinput} className='btn btn-primary text-white' id='showfield'>+ </a>
@@ -645,19 +692,22 @@ export default function Addproduct() {
                                                     inputs == true ?
                                                         <div className='check d-flex justify-content-center' >
                                                             <div className='ml-3'>
-                                                                Shoes Size:<input type="radio" value="shoes" name='shoes' onChange={saveradio} />
+                                                                Shoes Size:<input type="radio" value="shoes" name='shoes' checked={SizeName == "shoes"} onChange={saveradio} />
                                                             </div>
                                                             <div className='ml-3'>
-                                                                Cloth Size  <input type="radio" value="Cloth" name='shoes' onChange={saveradio} />
+                                                                Cloth Size  <input type="radio" value="Cloth" name='shoes' checked={SizeName == "Cloth"} onChange={saveradio} />
                                                             </div>
                                                             <div className='ml-3'>
-                                                                Perfume Size  <input type="radio" value="Perfume" name='shoes' onChange={saveradio} />
+                                                                Perfume Size  <input type="radio" value="Perfume" name='shoes' checked={SizeName == "Perfume"} onChange={saveradio} />
                                                             </div>
                                                         </div>
                                                         : null
                                                 }
                                             </div>
                                             <div className="col-lg-6 mt-5">
+                                                {
+                                                    console.log(SizeName)
+                                                }
                                                 {
 
                                                     Radiovalue == "shoes" ?
@@ -667,6 +717,7 @@ export default function Addproduct() {
                                                             <MultiSelect
                                                                 options={shoesSize}
                                                                 value={selected}
+
                                                                 onChange={setSelected}
                                                                 labelledBy="Select"
                                                             />
@@ -692,6 +743,7 @@ export default function Addproduct() {
                                                                     <MultiSelect
                                                                         options={PermumeSize}
                                                                         value={selected}
+
                                                                         onChange={setSelected}
                                                                         labelledBy="Select"
                                                                     />
@@ -707,6 +759,7 @@ export default function Addproduct() {
                                                 <select className="selecttype"
                                                     name="Maincategory"
                                                     onChange={selectMain}
+                                                    value={subpush}
                                                 >
                                                     <option>Select the Category :</option>
 
@@ -719,7 +772,7 @@ export default function Addproduct() {
 
                                             <div className="col-lg-4 mt-5 mb-3">
                                                 <label className="lbl-comn-info">Choose Sub-Category : <span className="text-danger"></span></label>
-                                                <select className="selecttype" name="Maincategory" onChange={selectSub}>
+                                                <select className="selecttype" name="Maincategory" value={childpush} onChange={selectSub}>
                                                     <option >Select the Category :</option>
                                                     {deoendence && deoendence.length > 0 && deoendence.map((i) => (
                                                         <option value={i.id}>{i.CateName}</option>
@@ -732,6 +785,7 @@ export default function Addproduct() {
                                                 <select className="selecttype"
                                                     name="Maincategory"
                                                     onChange={thirdCategory}
+                                                    value={ThirdCategoty}
 
                                                 >
                                                     <option>Select the Category :</option>
@@ -753,6 +807,7 @@ export default function Addproduct() {
                                                             <select className="selecttype"
                                                                 name="Maincategory"
                                                                 onChange={changebrand}
+                                                                value={Ebrand}
                                                             >
                                                                 <option >Select the Category :</option>
                                                                 {Brands && Brands.length > 0 && Brands.map((i) => (

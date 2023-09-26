@@ -146,7 +146,7 @@ export default function Product() {
                 sort: false,
                 customBodyRender: (value, tableMeta, updateValue) => (
                     <>
-                        <p className='description'>{value}</p>
+                        <p className='description'>{parse(value)}</p>
                     </>
                 )
             }
