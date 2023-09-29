@@ -11,13 +11,14 @@ import Brands from './Admin/Pages/Brands';
 import Login from './Admin/Components/Login';
 import Register from './Admin/Components/Register';
 import Protecteduser from './Admin/Components/Protecteduser';
+import ApexChart from './Components/ApexChart';
+import Home from './Client/Home';
 
 export default function ReactRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Product />} />
-
+                <Route path="/" element={<Home />} />
                 <Route path="/addproduct" element={<Addproduct />} />
                 <Route path="/addproduct/:id" element={<Addproduct />} />
 
@@ -31,6 +32,7 @@ export default function ReactRouter() {
                 <Route path="/brands" element={<Brands />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/chart" element={<ApexChart />} />
 
 
                 <Route path="/product/:id" element={

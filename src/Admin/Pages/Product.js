@@ -72,18 +72,18 @@ export default function Product() {
 
 
 
-        // setTimeout(() => {
-        //     if (isdatafind) {
-        //         if (Number(localStorage.getItem('UserRole')) == 1) {
-        //             if (localStorage.getItem('sc') !== dummy) {
-        //                 window.location.href = '/login'
-        //             }
-        //         }
-        //     } else {
-        //         window.location.href = '/login'
-        //         console.log("as")
-        //     }
-        // }, 900);
+        setTimeout(() => {
+            if (isdatafind) {
+                if (Number(localStorage.getItem('UserRole')) == 1) {
+                    if (localStorage.getItem('sc') !== dummy) {
+                        window.location.href = '/login'
+                    }
+                }
+            } else {
+                // window.location.href = '/login'
+                console.log("as")
+            }
+        }, 900);
     }
 
 

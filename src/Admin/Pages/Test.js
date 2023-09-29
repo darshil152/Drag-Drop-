@@ -136,6 +136,10 @@ export default function Test() {
 
     }
 
+
+
+
+
     return (
 
 
@@ -264,15 +268,7 @@ export default function Test() {
                         </div>
 
 
-                        <div className="container text-center mt-5">
-                            <h1 className='text-left'>Top Brand's</h1>
-                            <input type="checkbox" name="language" onChange={checks} value="Adidas" /> Adidas <br />
-                            <input type="checkbox" name="language" onChange={checks} value="Holiester" /> Holiester <br />
-                            <input type="checkbox" name="language" onChange={checks} value="Lacoste" /> Lacoste <br />
-                            <input type="checkbox" name="language" onChange={checks} value="Supreme" /> Supreme <br />
-                            <input type="checkbox" name="language" onChange={checks} value="Nike" /> Nike <br />
-                            <button >Submit</button>
-                        </div>
+
 
 
                     </div>

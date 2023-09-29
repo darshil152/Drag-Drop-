@@ -78,18 +78,19 @@ export default function Addproduct() {
         console.log(idd)
         let x = fetchdata[0].Image
         let filterdata = x.filter((i) => i != idd)
+        console.log(filterdata)
 
         updataImage(filterdata)
 
-        // const storage = getStorage();
-        // const desertRef = ref(storage, i);
-        // // Delete the file
-        // deleteObject(desertRef).then(() => {
-        //     // File deleted successfully
-        //     console.log(" File deleted successfully")
-        // }).catch((error) => {
-        //     // Uh-oh, an error occurred!
-        // });
+        const storage = getStorage();
+        const desertRef = ref(storage, idd);
+        // Delete the file
+        deleteObject(desertRef).then(() => {
+            // File deleted successfully
+            console.log(" File deleted successfully")
+        }).catch((error) => {
+            // Uh-oh, an error occurred!
+        });
     }
 
     const updataImage = (filterdata) => {
@@ -175,6 +176,7 @@ export default function Addproduct() {
             console.error(err)
         });
     }
+
 
 
     const getBrands = () => {
@@ -640,7 +642,7 @@ export default function Addproduct() {
                                                                 return (
                                                                     <>
                                                                         <img src={i} className='img-fluid' />
-                                                                        <button onClick={() => deletepic(i)}>✖</button>
+                                                                        <a onClick={() => deletepic(i)}>✖</a>
                                                                     </>
                                                                 )
                                                             })
