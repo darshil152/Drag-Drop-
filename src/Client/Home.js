@@ -112,13 +112,11 @@ export default function Home() {
         <>
 
             <div className="header-navigation-wrapper">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-12 text-center">
-                            <h6>
-                                Join our showroom and get 25 % off ! Coupon code : Bangbang45
-                            </h6>
-                        </div>
+                <div className="row">
+                    <div className="col-md-12 text-center">
+                        <h6>
+                            Join our showroom and get 25 % off ! Coupon code : Bangbang45
+                        </h6>
                     </div>
                 </div>
             </div>
@@ -173,7 +171,7 @@ export default function Home() {
                 </div>
             </nav>
 
-            <div className='container'>
+            <div className='container h-auto'>
                 <Slider {...settings}>
                     {
                         data[0] && data[0].length > 0 ? data[0].map((i) => {

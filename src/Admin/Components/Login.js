@@ -210,8 +210,6 @@ export default function Login() {
                                                         </div>
                                                         <div className="field padding-bottom--24 text-center">
                                                             <Link to="/register">If you don't have an account</Link>
-
-
                                                         </div>
 
                                                     </form>

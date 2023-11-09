@@ -529,7 +529,6 @@ export default function Addproduct() {
     return (
         <>
 
-            <Layout />
             {showLoader && <Loader />}
 
 

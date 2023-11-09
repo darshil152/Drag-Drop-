@@ -248,8 +248,8 @@ export default function Product() {
 
     const deletedata = (tableMeta) => {
         console.log(tableMeta)
-        let filterdata = data.filter((i) => i.id != tableMeta.rowData[6])
-        // updateproducts(filterdata, tableMeta.rowData[6])
+        let filterdata = data.filter((i) => i.id != tableMeta.rowData[7])
+        updateproducts(filterdata, tableMeta.rowData[7])
     }
 
 
@@ -257,7 +257,6 @@ export default function Product() {
         const db = firebaseApp.firestore();
         db.collection('Products').where("id", "==", id).get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
-
                 db.collection("Products").doc(doc.ref.id).delete().then(() => {
                     getdata()
 

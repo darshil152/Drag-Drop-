@@ -4,6 +4,7 @@ import { faBars, faTimes, faTicket, faCalendarDays, faLock, faClock, faUser, faP
 import logo from "../Assets/logo.png"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Dropdown from 'react-bootstrap/Dropdown';
 
 export default function Sidebar() {
 
@@ -119,7 +120,17 @@ export default function Sidebar() {
                             </div>
                         </Link>
 
+                        <Dropdown>
+                            <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                                Diesel
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <Dropdown.Item >Preview</Dropdown.Item>
+                                <Dropdown.Item >Delete</Dropdown.Item>
+                                <Dropdown.Item >Edit</Dropdown.Item>
 
+                            </Dropdown.Menu>
+                        </Dropdown>
 
 
 
